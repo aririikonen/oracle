@@ -29,9 +29,9 @@ Quickstart (database)
 * Have either an open Source Chef Server or a Hosted Chef account at
   the ready.
 * Spin up a CentOS VM using your choice of hypervisor and/or Vagrant,
-  and the `CentOS-6.4-x86_64-minimal.iso`, which you can get here:
+  and the `CentOS-6.5-x86_64-minimal.iso`, which you can get here:
 
-       [`CentOS-6.4-x86_64-minimal.iso`](https://www.centos.org/)
+  [`CentOS-6.5-x86_64-minimal.iso`](https://www.centos.org/)
 
 * Your NIC is not up by default, make sure to edit the
   `/etc/sysconfig/ifcfg-eth0` file and run `service network start`.
@@ -127,8 +127,8 @@ See here:
 This cookbook was successfully tested using Chef-Client 11, in combo
 with the open source Chef Server 11, as well as with Hosted Chef.
 
-Version 1.1.0 has been tested against Chef-Client 11 (`chef-11.10.0-1.el6.x86_64`)
-and open source Chef Server 11 (`chef-server-11.0.10-1.el6.x86_64`).
+Version 1.1.0 has been tested against Chef-Client (11.10.0 and 11.10.4)
+and open source Chef Server 11.
 
 If you use the open source Chef Server, because installing a
 database takes a long while, and owing to
@@ -145,9 +145,8 @@ then run `chef-server-ctl reconfigure` to reconfigure Chef Server.
 
 ## Platforms
 
-* `CentOS 6.4 (x86_64)`
-* `RHEL 6.4 (x86_64)`
-* `Scientific Linux 6.4 (x86_64)`
+* `CentOS 6.5 (x86_64)`
+* `RHEL 6.5 (x86_64)`
 
 oracle was tested on the distros/versions given above; YMMV on
 older versions of their 6.x branches.
