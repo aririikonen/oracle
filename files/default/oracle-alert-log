@@ -1,0 +1,9 @@
+/opt/oracle/diag/rdbms/*/*/trace/alert_*.log {
+weekly
+copytruncate
+rotate 10400
+compress
+create 640 oracle oinstall
+dateext
+dateformat -%Y-%m-%d-%s
+}

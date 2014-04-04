@@ -1,0 +1,25 @@
+# Enable core files
+ulimit -S -c unlimited > /dev/null 2>&1
+
+EDITOR=/bin/vi
+ORACLE_BASE=<%= node[:oracle][:ora_base] %>
+ORACLE_HOME=<%= node[:oracle][:client][:ora_home] %>
+ORA_ENV=<%= File.basename node[:oracle][:client][:ora_home] %>
+ORACLE_HOSTNAME=`hostname -f`
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:<%= node[:oracle][:client][:ora_home] %>/lib
+export EDITOR ORACLE_BASE ORACLE_HOME ORACLE_SID ORA_ENV ORACLE_HOSTNAME LD_LIBRARY_PATH
+
+NLS_DATE_FORMAT='YYYYMMDD.HH24MISS'
+NLS_LANG=american_america.al32utf8
+export NLS_DATE_FORMAT NLS_LANG
+
+PATH=$PATH:/usr/sbin:$ORACLE_BASE/dba/bin:$ORACLE_HOME/bin:$ORACLE_HOME/OPatch
+export PATH
+
+alias cdora='cd <%= node[:oracle][:ora_base] %>'
+alias ls='ls --color=auto'
+
+HOSTNAME=`hostname | awk -F. '{print $1}'`
+PS1='[$USER@$HOSTNAME] $ORA_ENV
+$PWD> '
+export PS1

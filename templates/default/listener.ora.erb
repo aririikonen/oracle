@@ -1,0 +1,10 @@
+LISTENER =
+  (DESCRIPTION_LIST =
+    (DESCRIPTION =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = <%= node[:fqdn] %>)(PORT = 1521))
+    )
+  )
+
+SECURE_REGISTER_LISTENER = (IPC)
+ADR_BASE_LISTENER = <%= node[:oracle][:ora_base] %>
+

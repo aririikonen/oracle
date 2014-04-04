@@ -1,0 +1,9 @@
+PORT=1521
+SID=<%= node[:oracle][:rdbms][:dbs].keys.first %>
+ORACLE_HOME=<%= node[:oracle][:rdbms][:ora_home] %>
+LISTENER_OH=<%= node[:oracle][:rdbms][:ora_home] %>
+EMAIL_ADDRESS=<%= node[:oracle][:rdbms][:dbconsole][:notification_email] %>
+MAIL_SERVER_NAME=<%= node[:oracle][:rdbms][:dbconsole][:outgoing_mail] %>
+SYS_PWD=<%= node[:oracle][:rdbms][:sys_pw] %>
+DBSNMP_PWD=<%= node[:oracle][:rdbms][:dbsnmp_pw] %>
+SYSMAN_PWD=<%= node[:oracle][:rdbms][:dbconsole][:sysman_pw] %>

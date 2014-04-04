@@ -1,0 +1,13 @@
+oracle.install.responseFileVersion=/oracle/install/rspfmt_clientinstall_response_schema_v11_2_0
+ORACLE_HOSTNAME=<%= node[:fqdn] %>
+UNIX_GROUP_NAME=oracli
+INVENTORY_LOCATION=/opt/oraInventory
+SELECTED_LANGUAGES=en
+ORACLE_HOME=<%= node[:oracle][:client][:ora_home] %>
+ORACLE_BASE=<%= node[:oracle][:ora_base] %>
+oracle.install.client.installType=Runtime
+oracle.install.client.customComponents=
+oracle.install.client.oramtsPortNumber=
+oracle.install.client.schedulerAgentHostName=
+oracle.install.client.schedulerAgentPortNumber=
+oracle.installer.autoupdates.option=SKIP_UPDATES

@@ -1,0 +1,15 @@
+# Oracle 11g R2 kernel tuning
+kernel.sem = 250 32000 100 128
+fs.file-max = 6815744
+fs.aio-max-nr = 1048576
+net.ipv4.ip_local_port_range = 9000 65500
+net.core.rmem_default = 262144
+net.core.rmem_max = 4194304
+net.core.wmem_default = 262144
+net.core.wmem_max = 1048576
+
+# The kernel parameters below are already set to
+# a value equal to or higher than the minimum recommended by Oracle.
+#kernel.shmall = 2097152 recommended, set to 4294967296
+#kernel.shmmax = 536870912 recommended, set to 68719476736
+#kernel.shmmni = 4096 recommended, set to 4096

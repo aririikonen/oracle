@@ -1,0 +1,22 @@
+oracle.install.responseFileVersion=/oracle/install/rspfmt_dbinstall_response_schema_v11_2_0
+oracle.install.option=INSTALL_DB_SWONLY
+ORACLE_HOSTNAME=<%= node[:fqdn] %>
+UNIX_GROUP_NAME=oinstall
+INVENTORY_LOCATION=/opt/oraInventory
+SELECTED_LANGUAGES=en
+ORACLE_HOME=<%= node[:oracle][:rdbms][:ora_home] %>
+ORACLE_BASE=<%= node[:oracle][:ora_base] %>
+oracle.install.db.InstallEdition=EE
+oracle.install.db.EEOptionsSelection=false
+oracle.install.db.DBA_GROUP=dba
+oracle.install.db.OPER_GROUP=dba
+oracle.install.db.isRACOneInstall=false
+oracle.install.db.config.starterdb.type=GENERAL_PURPOSE
+oracle.install.db.config.starterdb.memoryOption=false
+oracle.install.db.config.starterdb.installExampleSchemas=false
+oracle.install.db.config.starterdb.enableSecuritySettings=true
+oracle.install.db.config.starterdb.control=DB_CONTROL
+oracle.install.db.config.starterdb.automatedBackup.enable=false
+SECURITY_UPDATES_VIA_MYORACLESUPPORT=false
+DECLINE_SECURITY_UPDATES=true
+oracle.installer.autoupdates.option=SKIP_UPDATES

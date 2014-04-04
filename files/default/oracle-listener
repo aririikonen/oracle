@@ -1,0 +1,9 @@
+/opt/oracle/diag/tnslsnr/*/listener/trace/listener.log {
+weekly
+copytruncate
+rotate 8
+compress
+create 640 oracle oinstall
+dateext
+dateformat -%Y-%m-%d-%s
+}
