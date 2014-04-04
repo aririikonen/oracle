@@ -2,7 +2,7 @@ Description
 ===========
 
 Installs and configures the Oracle RDBMS, patches it to the latest
-version and creates databases (v1.0.4).
+version and creates databases.
 
 New features in version v1.1.0
 
