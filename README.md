@@ -321,6 +321,8 @@ rather unsurprisingly:
   for em dbconsole notifications. Has a default placeholder value.
 * `node[:oracle][:rdbms][:dbconsole][:outgoing_mail]` - sets the mail
   server hostname. Uses `mailhost` as the default placeholder value.
+* `node[:oracle][:rdbms][:db_create_template]` - sets the db template
+  file name. Has a default placeholder value.
 
 Attributes under `:client` relate to the Oracle Client proper,
 rather unsurprisingly:

@@ -66,7 +66,7 @@ node[:oracle][:rdbms][:dbs].each_key do |db|
     user "oracle"
     group "oinstall"
     environment (node[:oracle][:rdbms][:env])
-    code "dbca -silent -createDatabase -templateName default_template.dbt -gdbname #{db} -sid #{db} -sysPassword #{node[:oracle][:rdbms][:sys_pw]} -systemPassword #{node[:oracle][:rdbms][:system_pw]}"
+    code "dbca -silent -createDatabase -templateName #{node[:oracle][:rdbms][:db_create_template]} -gdbname #{db} -sid #{db} -sysPassword #{node[:oracle][:rdbms][:sys_pw]} -systemPassword #{node[:oracle][:rdbms][:system_pw]}"
   end
 
   # Settingi a flag to indicate, that the database has been created.

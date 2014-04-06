@@ -43,6 +43,7 @@ default[:oracle][:rdbms][:is_installed] = false
 default[:oracle][:rdbms][:install_info] = {}
 default[:oracle][:rdbms][:install_dir] = "#{node[:oracle][:ora_base]}/install_dir"
 default[:oracle][:rdbms][:response_file_url] = ''
+default[:oracle][:rdbms][:db_create_template] = 'default_template.dbt'
 
 ## Settings specific to the Oracle Client proper.
 default[:oracle][:client][:ora_home] = "#{node[:oracle][:ora_base]}/11R23cli"
