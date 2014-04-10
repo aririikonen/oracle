@@ -151,7 +151,7 @@ then run `chef-server-ctl reconfigure` to reconfigure Chef Server.
 oracle was tested on the distros/versions given above; YMMV on
 older versions of their 6.x branches.
 The development target was `Centos x86_64 minimal install`.
-DISCLAIMER: note that, out of those three platforms, Oracle Database
+DISCLAIMER: note that, out of these platforms, Oracle Database
 11g R2 is only certified on RHEL 6 :-) For more detail, check the
 certification matrix on My Oracle Support:
 [certification matrix](https://support.oracle.com)
