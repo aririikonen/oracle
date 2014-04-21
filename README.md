@@ -454,6 +454,17 @@ Array of package names that's the value of `node[:oracle][:client][:deps]`.
 Configures kernel parameters for Oracle. We deploy a config file to
 `/etc/sysctl.d/ora_params` and reload `sysctl` settings.
 
+## `ora_os_setup`
+
+Includes 3 recipes, which are, in order:
+
+* `oracle::oracle_user_config`
+* `oracle::deps_install`
+* `oracle::kernel_params`
+
+The recipe will set up the oracle user, install Oracle's dependencies
+and tweak the kernel's parameters.
+
 ## `dbbin`
 
 Installs Oracle RDBMS binaries. The install files are specified as
