@@ -137,7 +137,7 @@ node[:oracle][:rdbms][:dbs].each_key do |db|
       end
       # Running emca.
       execute "conf_dbcontrol_#{db}" do
-        command "export ORACLE_SID=#{db}; emca -config dbcontrol db -repos create -respFile #{node[:oracle][:rdbms][:ora_home]}/em.rsp"
+        command "export ORACLE_HOME=#{node[:oracle][:rdbms][:ora_home]}; emca -config dbcontrol db -repos create -respFile #{node[:oracle][:rdbms][:ora_home]}/em.rsp"
         user 'oracle'
         group 'oinstall'
         environment (node[:oracle][:rdbms][:env])
