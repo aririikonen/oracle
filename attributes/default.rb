@@ -19,7 +19,7 @@
 default[:oracle][:user][:uid] = 201
 default[:oracle][:user][:gid] = 201
 default[:oracle][:user][:shell] = '/bin/ksh'
-default[:oracle][:user][:sup_grps] = {'dba' => 202}
+default[:oracle][:user][:sup_grps] = {'dba' => 202, 'bckpdba' => 203, 'dgdba' => 204, 'kmdba' => 205}
 default[:oracle][:user][:pw_set] = false
 default[:oracle][:user][:edb] = 'oracle'
 default[:oracle][:user][:edb_item] = 'foo'
@@ -38,7 +38,9 @@ default[:oracle][:ora_base] = '/opt/oracle'
 default[:oracle][:ora_inventory] = '/opt/oraInventory'
 
 ## Settings specific to the Oracle RDBMS proper.
+default[:oracle][:rdbms][:dbbin_version] = '11g'
 default[:oracle][:rdbms][:ora_home] = "#{node[:oracle][:ora_base]}/11R23"
+default[:oracle][:rdbms][:ora_home_12c] = "#{node[:oracle][:ora_base]}/12R1"
 default[:oracle][:rdbms][:is_installed] = false
 default[:oracle][:rdbms][:install_info] = {}
 default[:oracle][:rdbms][:install_dir] = "#{node[:oracle][:ora_base]}/install_dir"
@@ -57,11 +59,23 @@ default[:oracle][:client][:response_file_url] = ''
 # We omit version-release info by design, as their requirements are satisfied by
 # CentOS 6.4, which is the minimum version targeted by oracle.
 default[:oracle][:rdbms][:deps] = ['binutils', 'compat-libcap1', 'compat-libstdc++-33', 'gcc', 'gcc-c++', 'glibc',
-                                   'glibc-devel', 'ksh', 'libgcc', 'libstdc++', 'libstdc++-devel', 'libaio', 'libaio-devel', 'make', 'sysstat']
+                                   'glibc-devel', 'ksh', 'libgcc', 'libstdc++', 'libstdc++-devel', 'libaio',
+                                   'libaio-devel', 'make', 'sysstat']
 
+# Oracle dependencies for 12c
+default[:oracle][:rdbms][:deps_12c] = ['binutils', 'compat-libcap1', 'compat-libstdc++-33', 'gcc', 'gcc-c++', 'glibc',
+                                   'glibc-devel', 'ksh', 'libgcc', 'libstdc++', 'libstdc++-devel', 'libaio',
+                                   'libaio-devel', 'libXext', 'libXtst', 'libX11', 'libXau', 'libxcb', 'libXi', 'make', 'sysstat']
+
+# Oracle environment for 11g
 default[:oracle][:rdbms][:env] = {'ORACLE_BASE' => node[:oracle][:ora_base],
                                   'ORACLE_HOME' => node[:oracle][:rdbms][:ora_home],
                                   'PATH' => "/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/sbin:#{node[:oracle][:ora_base]}/dba/bin:#{node[:oracle][:rdbms][:ora_home]}/bin:#{node[:oracle][:rdbms][:ora_home]}/OPatch"}
+
+# Oracle environment for 12c
+default[:oracle][:rdbms][:env_12c] = {'ORACLE_BASE' => node[:oracle][:ora_base],
+                                  'ORACLE_HOME' => node[:oracle][:rdbms][:ora_home_12c],
+                                  'PATH' => "/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/usr/sbin:#{node[:oracle][:ora_base]}/dba/bin:#{node[:oracle][:rdbms][:ora_home_12c]}/bin:#{node[:oracle][:rdbms][:ora_home_12c]}/OPatch"}
 
 default[:oracle][:rdbms][:install_files] = ['https://https-server.example.localdomain/path/to/p10404530_112030_Linux-x86-64_1of7.zip',
                                             'https://https-server.example.localdomain/path/to/p10404530_112030_Linux-x86-64_2of7.zip']
@@ -99,6 +113,7 @@ default[:oracle][:client][:latest_patch][:url] = 'https://https-server.example.l
 # up until , and excluding, the first '_', but this is not guaranteed to
 # always be the case.
 default[:oracle][:rdbms][:latest_patch][:dirname] = '16619892'
+default[:oracle][:rdbms][:latest_patch][:dirname_12c] = '18031528'
 default[:oracle][:rdbms][:latest_patch][:is_installed] = false
 
 # Client patch folder

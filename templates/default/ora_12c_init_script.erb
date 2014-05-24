@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# Init file for Oracle database server
+#
+# chkconfig: 35 99 02
+# description: Oracle database server
+ 
+case "$1" in
+'start')
+        su - oracle -c "<%= node[:oracle][:rdbms][:ora_home_12c] %>/bin/dbstart <%= node[:oracle][:rdbms][:ora_home_12c] %>"
+        RETVAL=$?
+        [ "$RETVAL" = 0 ] && touch /var/lock/subsys/oracle
+        ;;
+ 
+'stop')
+        su - oracle -c "<%= node[:oracle][:rdbms][:ora_home_12c] %>/bin/dbshut <%= node[:oracle][:rdbms][:ora_home_12c] %>"
+        RETVAL=$?
+        [ "$RETVAL" = 0 ] && rm -f /var/lock/subsys/oracle
+        ;;
+ 
+*)
+        echo "Usage: $0 { start | stop }"
+        exit 1
+        ;;
+ 
+esac
+exit 0

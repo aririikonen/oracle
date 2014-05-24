@@ -4,10 +4,11 @@ Description
 Installs and configures the Oracle RDBMS, patches it to the latest
 version and creates databases.
 
-New features in version v1.1.0
+New features on v1.2.0
 
-* Configure the EM dbconsole (Enterprise Manager Database Control)
-* Install Oracle Client and patch it to the latest patch
+* Oracle 12c Release 1 support with DBEXPRESS
+
+(Oracle client install is still 11g R2)
 
 Tested with an Open Source Chef Server/Chef Client combo only.
 
@@ -48,6 +49,14 @@ Quickstart (database)
         run_list 'recipe[oracle]', 'recipe[oracle::logrotate_alert_log]', 'recipe[oracle::logrotate_listener]', 'recipe[oracle::createdb]'
         override_attributes :oracle => {:rdbms => {:latest_patch => {:url => 'https://secure.server.localdomain/path/to/p16619892_112030_Linux-x86-64.zip'}, :opatch_update_url => 'https://secure.server.localdomain/path/to/p6880880_112000_Linux-x86-64.zip', :install_files => ['https://secure.server.localdomain/path/to/p10404530_112030_Linux-x86-64_1of7.zip', 'https://secure.server.localdomain/path/to/p10404530_112030_Linux-x86-64_2of7.zip']}} 
 
+* For 12c install, add `node[:oracle][:rdbms][:dbbin_version]`
+  override_attribute to the role.
+
+        name "ora_12c_quickstart"
+        description "Role applied to Oracle 12c quickstart test machines."
+        run_list 'recipe[base]', 'recipe[oracle]', 'recipe[oracle::logrotate_alert_log]', 'recipe[oracle::logrotate_listener]', 'recipe[oracle::createdb]'
+        override_attributes :oracle => {:rdbms => {:latest_patch => {:url => 'https://web-server.local/orapkg/p18031528_121010_Linux-x86-64.zip'}, :opatch_update_url => 'https://web-server.local/orapkg/p6880880_121010_Linux-x86-64.zip', :install_files => ['https://web-server.local/orapkg/linuxamd64_12c_database_1of2.zip', 'https://web-server.local/orapkg/linuxamd64_12c_database_2of2.zip'], :dbbin_version => '12c'}}
+
 * You need to set up an encrypted data bag item to secure the oracle
   user's password. See Opscode's docs site for details on encrypted
   data bags:
@@ -71,7 +80,10 @@ Quickstart (database)
 
 * Bootstrap the node, telling Chef to create the FOO database on it:
 
-        knife bootstrap HOSTNAME -r 'role[ora_quickstart]' -j '{"oracle" : {"rdbms": {"dbs": {"FOO" : false}}}}'
+  11g 
+        knife bootstrap HOSTNAME -r 'role[ora_quickstart]' -j '{"oracle" : {"rdbms": {"dbs": {"FOO" : false}}}}' 
+  12c 
+        knife bootstrap HOSTNAME -r 'role[ora_12c_quickstart]' -j '{"oracle" : {"rdbms": {"dbs": {"FOO" : false}}}}' 
 
 * Go grab a cup of tea, as this is apt to take a fair amount of time
 to complete :-)
@@ -79,6 +91,8 @@ to complete :-)
 
 Quickstart (client)
 ===================
+
+* Only 11g client available for now.
 
 * Follow the steps above to create a VM
 
@@ -120,15 +134,17 @@ Requirements
 
 See here:
 
-[Oracle's requirements](http://docs.oracle.com/cd/E11882_01/install.112/e24321/pre_install.htm#i1011296)
+[Oracle's requirements for 11g](http://docs.oracle.com/cd/E11882_01/install.112/e24321/pre_install.htm#i1011296)
+
+[Oracle's requirements for 12c](http://docs.oracle.com/cd/E16655_01/install.121/e17720/pre_install.htm#LADBI7496)
 
 ## Chef
 
 This cookbook was successfully tested using Chef-Client 11, in combo
 with the open source Chef Server 11, as well as with Hosted Chef.
 
-Version 1.1.0 has been tested against Chef-Client (11.10.0 and 11.10.4)
-and open source Chef Server 11.
+Version 1.2.0 has been tested against Chef-Client (11.10.4)
+and open source Chef Server 11 (11.0.10).
 
 If you use the open source Chef Server, because installing a
 database takes a long while, and owing to
@@ -152,13 +168,13 @@ oracle was tested on the distros/versions given above; YMMV on
 older versions of their 6.x branches.
 The development target was `Centos x86_64 minimal install`.
 DISCLAIMER: note that, out of these platforms, Oracle Database
-11g R2 is only certified on RHEL 6 :-) For more detail, check the
-certification matrix on My Oracle Support:
+11g R2 and 12c R1 are only certified on RHEL 6 :-) For more detail,
+check the certification matrix on My Oracle Support:
 [certification matrix](https://support.oracle.com)
 
 ## Packages
 
-* Access to My Oracle Support to download the 11.2.0.3 install media
+* Access to My Oracle Support to download the 11g R2 install media
   and the patch files.
 
   You will not be able to download the 11.2.0.3 install files from
@@ -172,9 +188,8 @@ certification matrix on My Oracle Support:
   first). See the README for more info (login to My Oracle Support
   required)."
 
-  For this version of the cookbook, you'll need the following
-  packages:
-
+  11g
+  
   Patch 16619892 (11.2.0.3.7): `p16619892_112030_Linux-x86-64.zip`  
   OPatch 6880880 (11.2.0.3.4): `p6880880_112000_Linux-x86-64.zip`  
   Oracle 11.2.0.3 media: `p10404530_112030_Linux-x86-64_1of7.zip`  
@@ -184,6 +199,19 @@ certification matrix on My Oracle Support:
   **Note:** You don't need all seven 11.2.0.3 media files in order to
   just install the RDBMS' binaries. `p10404530_112030_Linux-x86-64_4of7.zip`
   is for the client install.
+
+* Download the 12.1.0.1 install files from Oracle Technology
+  Network. For the PSU and OPatch patch files you need access to
+  My Oracle Support as well as an active CSI.
+
+  [Oracle DB Downloads page](http://www.oracle.com/technetwork/database/enterprise-edition/downloads/index.html)
+
+  12c
+  
+  Patch 18031528 (12.1.0.1.3): `p18031528_121010_Linux-x86-64.zip`  
+  OPatch 6880880 (12.1.0.1.2): `p6880880_121010_Linux-x86-64.zip`  
+  Oracle 12.1.0.1 media: `linuxamd64_12c_database_1of2.zip`   
+  Oracle 12.1.0.1 media: `linuxamd64_12c_database_2of2.zip` 
 
 ## Miscellaneous
 
@@ -267,6 +295,7 @@ have guessed:
 Attributes under `:rdbms` relate to the Oracle RDBMS proper,
 rather unsurprisingly:
 
+* `node[:oracle][:rdbms][:dbbin_version]` - selection for 12c.
 * `node[:oracle][:rdbms][:ora_home]` - sets the oracle home's absolute
   pathname; defaults to  `#{node[:oracle][:ora_base]}/11R23`.
 * `node[:oracle][:rdbms][:is_installed]` - flag to indicate whether
@@ -471,7 +500,8 @@ Installs Oracle RDBMS binaries. The install files are specified as
 an Array of URLs that's the value of the `node[:oracle][:rdbms][:install_files]`
 attribute.
 
-**Note:** If you use the `ora_quickstart` role, it will override the values.
+**Note:** If you use the `ora_quickstart` or `ora_12c_quickstart` roles, 
+they will override the values.
 
 ## `clibin`
 
@@ -486,10 +516,6 @@ attribute.
 Installs latest patch for Oracle RDBMS. The patch file is specified
 as a URL that's the value of `node[:oracle][:rdbms][:latest_patch][:url]`.
 
-Applying Patch 16902043 with `latest_dbpatch.rb` has not been tested,
-but it should work, just by setting `node[:oracle][:rdbms][:latest_patch][:url]`
-to the proper URL, pointing at that patch on your HTTPS server.
-
 Also remember to update OPatch 6880880 to the latest version.
 
 Previous or new PSU patches should work without many changes. 11.2.0.3.4,
@@ -500,14 +526,10 @@ Previous or new PSU patches should work without many changes. 11.2.0.3.4,
 Installs latest patch for Oracle Client. The patch file is specified
 as a URL that's the value of `node[:oracle][:client][:latest_patch][:url]`.
 
-Applying Patch 16902043 with `cli_latest_patch.rb` has not been tested,
-but it should work, just by setting `node[:oracle][:client][:latest_patch][:url]`
-to the proper URL, pointing at that patch on your HTTPS server.
-
 Also remember to update OPatch 6880880 to the latest version.
 
 Previous or new PSU patches should work without many changes. 11.2.0.3.4,
-11.2.0.3.7 and 11.2.0.3.8 worked fine in our environment.
+11.2.0.3.7, 11.2.0.3.8 and 11.2.0.3.10 worked fine in our environment.
 
 ## `get_version`
 
@@ -576,33 +598,33 @@ Usage Notes
   complete.
 * The supplementary group `oinstall` for oracli is to align the permissions
   to access /opt/oraInventory.
-
+* If you experience errors while generating the ocm.rsp, this might
+  be due to not having connection to the internet.
 
 Roadmap
 =======
 
-For v1.2.0
-
-* Update the latest patch to 11.2.0.3.x.
-* Node attribute isolation to rdbms or oracli depending on which is
-  installed.
-* Ability to patch existing installations (patchbin.rb)
-
 For v1.3.0
 
-* Add OEM 11g agent installation
+* Oracle 12c Grid Infrastructure install
+* Update the 11g latest patch to 11.2.0.3.x.
+* Update the 12c latest patch to 12.1.0.1.x.
+* Node attribute isolation to rdbms or oracli depending on which is
+  installed.
+
+For v1.4.0
+
+* Oracle 12c Client install
+* Add OEM 11g/12c intelligent agent installation
+* Ability to patch existing installations (patchbin.rb)
 
 For v2.0.0
 
 * Re-factor and re-architecture the cookbook
-* LWRP's
+* LWRP's or HWRP's
 * Modular
 * Dynamic choice of Orcle version
 * Use of remote_file resources
-
-For v2.1.0
-
-* 12c support
 
 For v3.0.0
 
@@ -612,14 +634,14 @@ For v3.0.0
 Additional Info
 ===============
 
-Ari has a blog where he gets into more detail about our testing
-of oracle cookbook on two cloud providers (using Hosted Chef), and Chefy
+Ari has a blog where he gets into more detail about our testing of
+oracle cookbook on two cloud providers (using Hosted Chef), and Chefy
 and Oracly things generally:
 
 <http://oraarir.blogspot.fi/>
 
 Contributing
-===========
+============
 
 1. Fork the repository on Github: [oracle's GitHub repo](https://github.com/aririikonen/oracle)
 2. Create a named feature branch (like `add_component_x`)

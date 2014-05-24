@@ -61,38 +61,108 @@ node[:oracle][:rdbms][:dbs].each_key do |db|
     next
   end
 
-  # Create database.
-  bash "dbca_createdb_#{db}" do
-    user "oracle"
-    group "oinstall"
-    environment (node[:oracle][:rdbms][:env])
-    code "dbca -silent -createDatabase -templateName #{node[:oracle][:rdbms][:db_create_template]} -gdbname #{db} -sid #{db} -sysPassword #{node[:oracle][:rdbms][:sys_pw]} -systemPassword #{node[:oracle][:rdbms][:system_pw]}"
-  end
+  ## Create database. 
+  if node[:oracle][:rdbms][:dbbin_version] == "12c"
+    # 12c
+    bash "dbca_createdb_#{db}" do
+      user "oracle"
+      group "oinstall"
+      environment (node[:oracle][:rdbms][:env])
+      code "dbca -silent -createDatabase -emConfiguration DBEXPRESS -templateName #{node[:oracle][:rdbms][:db_create_template]} -gdbname #{db} -sid #{db} -sysPassword #{node[:oracle][:rdbms][:sys_pw]} -systemPassword #{node[:oracle][:rdbms][:system_pw]}"
+    end
+
+  else
+    # 11g
+    bash "dbca_createdb_#{db}" do
+      user "oracle"
+      group "oinstall"
+      environment (node[:oracle][:rdbms][:env])
+      code "dbca -silent -createDatabase -templateName #{node[:oracle][:rdbms][:db_create_template]} -gdbname #{db} -sid #{db} -sysPassword #{node[:oracle][:rdbms][:sys_pw]} -systemPassword #{node[:oracle][:rdbms][:system_pw]}"
+    end
+
+    # Add to listener.ora a stanza describing the new DB.
+    ruby_block "append_#{db}_stanza_to_lsnr_conf" do
+      block do
+        lsnr_conf = "#{node[:oracle][:rdbms][:ora_home]}/network/admin/listener.ora"
+        sid_desc_body = "(SID_DESC=(GLOBAL_DBNAME=#{db})(ORACLE_HOME=#{node[:oracle][:rdbms][:ora_home]})(SID_NAME=#{db})))"
+        abort("Could not back up #{lsnr_conf}; bailing out") unless system "cp --preserve=mode,ownership #{lsnr_conf} #{lsnr_conf}.bak-$(date +%Y-%m-%d-%H%M%S)"
+        File.open lsnr_conf, 'r+' do |f|
+          content = f.readlines
+          last_line = content[-1]
+          sid_desc_header = (last_line =~ /^SID/) ? '' : 'SID_LIST_LISTENER=(SID_LIST='
+          sid_desc = sid_desc_header + sid_desc_body
+          content[-1] = last_line.sub(/[)\s]$/, sid_desc)
+          f.rewind
+          f.truncate(f.pos)
+          f.write content.join
+        end
+      end
+      action :create
+    end
+    
+    # Configure dbcontrol.
+    if node[:oracle][:rdbms][:dbconsole][:emconfig]
+      # Creating em.rsp file for dbcontrol.
+      template "#{node[:oracle][:rdbms][:ora_home]}/em.rsp" do
+        owner 'oracle'
+        group 'oinstall'
+        mode '0644'
+      end
+      # Preparing DBSNMP user.
+      bash "prepare_dbsnmp_user_#{db}" do
+        user "oracle"
+        group "oinstall"
+        environment (node[:oracle][:rdbms][:env])
+        code <<-EOH2
+          export ORACLE_SID=#{db}
+          sqlplus / as sysdba <<-EOL1
+          ALTER USER DBSNMP ACCOUNT UNLOCK;
+          ALTER USER DBSNMP IDENTIFIED BY #{node[:oracle][:rdbms][:dbsnmp_pw]};
+          exit
+          EOL1
+        EOH2
+      end
+      # Change sid on em.rsp.
+      execute "set_sid_to_em-rsp_#{db}" do
+        command "sed -i '2s/.*/SID=#{db}/' #{node[:oracle][:rdbms][:ora_home]}/em.rsp"
+        user 'oracle'
+        group 'oinstall'
+      end
+      # Reloading the listener's configuration.
+      execute "reload_listener_to_register_#{db}" do
+        command "#{node[:oracle][:rdbms][:ora_home]}/bin/lsnrctl reload"
+        user 'oracle'
+        group 'oinstall'
+        environment (node[:oracle][:rdbms][:env])
+      end
+      # Running emca.
+      execute "conf_dbcontrol_#{db}" do
+        command "export ORACLE_SID=#{db}; emca -config dbcontrol db -repos create -respFile #{node[:oracle][:rdbms][:ora_home]}/em.rsp"
+        user 'oracle'
+        group 'oinstall'
+        environment (node[:oracle][:rdbms][:env])
+      end
+    end
+    
+    # Making sure shred is available
+    yum_package "coreutils" do
+      action :install
+      arch 'x86_64'
+    end
+
+    # Shreding the em.rsp to get rid of the passwords.
+    execute "shred_em_rsp_#{db}" do
+      command "/usr/bin/shred -zu #{node[:oracle][:rdbms][:ora_home]}/em.rsp"
+      user 'root'
+      group 'root'
+    end
+
+  end # of create database.
 
   # Settingi a flag to indicate, that the database has been created.
   ruby_block "set_#{db}_install_flag" do
     block do
       node.set[:oracle][:rdbms][:dbs][db] = true
-    end
-    action :create
-  end
-
-  # Add to listener.ora a stanza describing the new DB.
-  ruby_block "append_#{db}_stanza_to_lsnr_conf" do
-    block do
-      lsnr_conf = "#{node[:oracle][:rdbms][:ora_home]}/network/admin/listener.ora"
-      sid_desc_body = "(SID_DESC=(GLOBAL_DBNAME=#{db})(ORACLE_HOME=#{node[:oracle][:rdbms][:ora_home]})(SID_NAME=#{db})))"
-      abort("Could not back up #{lsnr_conf}; bailing out") unless system "cp --preserve=mode,ownership #{lsnr_conf} #{lsnr_conf}.bak-$(date +%Y-%m-%d-%H%M%S)"
-      File.open lsnr_conf, 'r+' do |f|
-        content = f.readlines
-        last_line = content[-1]
-        sid_desc_header = (last_line =~ /^SID/) ? '' : 'SID_LIST_LISTENER=(SID_LIST='
-        sid_desc = sid_desc_header + sid_desc_body
-        content[-1] = last_line.sub(/[)\s]$/, sid_desc)
-        f.rewind
-        f.truncate(f.pos)
-        f.write content.join
-      end
     end
     action :create
   end
@@ -115,58 +185,6 @@ node[:oracle][:rdbms][:dbs].each_key do |db|
     user 'oracle'
     group 'oinstall'
     environment (node[:oracle][:rdbms][:env])
-  end
-
-  # Configure dbcontrol.
-  if node[:oracle][:rdbms][:dbconsole][:emconfig]
-    # Creating em.rsp file for dbcontrol.
-    template "#{node[:oracle][:rdbms][:ora_home]}/em.rsp" do
-      owner 'oracle'
-      group 'oinstall'
-      mode '0644'
-    end
- 
-    # Preparing DBSNMP user.
-    bash "block_change_tracking_#{db}" do
-      user "oracle"
-      group "oinstall"
-      environment (node[:oracle][:rdbms][:env])
-      code <<-EOH2
-        export ORACLE_SID=#{db}
-        sqlplus / as sysdba <<-EOL1
-        ALTER USER DBSNMP ACCOUNT UNLOCK;
-        ALTER USER DBSNMP IDENTIFIED BY #{node[:oracle][:rdbms][:dbsnmp_pw]};
-        exit
-        EOL1
-      EOH2
-    end
-
-    # Change sid on em.rsp.
-    execute "set_sid_to_em-rsp_#{db}" do
-      command "sed -i '2s/.*/SID=#{db}/' #{node[:oracle][:rdbms][:ora_home]}/em.rsp"
-      user 'oracle'
-      group 'oinstall'
-    end
-    # Running emca.
-    execute "conf_dbcontrol_#{db}" do
-      command "emca -config dbcontrol db -repos create -respFile #{node[:oracle][:rdbms][:ora_home]}/em.rsp"
-      user 'oracle'
-      group 'oinstall'
-      environment (node[:oracle][:rdbms][:env])
-    end
-  end
-
-  # Making sure shred is available
-  yum_package "coreutils" do
-    action :install
-    arch 'x86_64'
-  end
-
-  # Shreding the em.rsp to get rid of the passwords.
-  execute "shred_em_rsp_#{db}" do
-    command "/usr/bin/shred -zu #{node[:oracle][:rdbms][:ora_home]}/em.rsp"
-    user 'root'
-    group 'root'
   end
 
   # Creating a directory for EXPORTS directory object.
@@ -203,7 +221,7 @@ node[:oracle][:rdbms][:dbs].each_key do |db|
 
   # Set the ORACLE_SID correctly in oracle's .profile.
   execute "set_oracle_sid_to_oracle_profile_#{db}" do
-    command "sed -i 's/ORACLE_SID=/ORACLE_SID=#{db}/g' /home/oracle/.profile"
+    command "sed -i 's/ORACLE_SID=.*/ORACLE_SID=#{db}/g' /home/oracle/.profile"
     user 'oracle'
     group 'oinstall'
     environment (node[:oracle][:rdbms][:env])
@@ -211,7 +229,7 @@ node[:oracle][:rdbms][:dbs].each_key do |db|
 
   # Set the ORACLE_UNQNAME correctly in oracle's .profile.
   execute "set_oracle_unqname_to_oracle_profile_#{db}" do
-    command "sed -i 's/ORACLE_UNQNAME=/ORACLE_UNQNAME=#{db}/g' /home/oracle/.profile"
+    command "sed -i 's/ORACLE_UNQNAME=.*/ORACLE_UNQNAME=#{db}/g' /home/oracle/.profile"
     user 'oracle'
     group 'oinstall'
     environment (node[:oracle][:rdbms][:env])

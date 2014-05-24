@@ -17,7 +17,6 @@
 ## Install latest patch for Oracle RDBMS.
 #
 
-
 unless node[:oracle][:rdbms][:latest_patch][:is_installed]
   # Stopping the DBs. We invoke the oracle init script using an execute resource
   # because the init script doesn't implement a status command, which in turn causes
@@ -29,7 +28,7 @@ unless node[:oracle][:rdbms][:latest_patch][:is_installed]
   # Fetching the latest 11.2.0.3.0 patch media with curl.
   # We use curl instead of wget because the latter caused Chef Client's
   # Memory usage to balloon until the OS killed it.
-  bash 'fetch_latest_patch_media_11R23' do
+  bash 'fetch_latest_patch_media' do
     user "oracle"
     group 'oinstall'
     cwd node[:oracle][:rdbms][:install_dir]

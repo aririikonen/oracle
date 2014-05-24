@@ -6,6 +6,11 @@ Cookbook relaunched (aririikonen/oracle).
 
 * Please refer to README.md, chapter Roadmap.
 
+## 1.2.0:
+
+* Support for 12c, including DBEXPRESS
+* Fixed node[:oracle][:rdbms][:install_info][:version_str], now it works with two digit version numbers (i.e. 11.2.0.3.10)
+
 ## 1.1.2:
 
 * Added a recipe to set the oracle pre-requisities only (ora_os_setup.rb)

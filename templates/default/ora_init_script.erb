@@ -8,11 +8,13 @@
 case "$1" in
 'start')
         su - oracle -c "<%= node[:oracle][:rdbms][:ora_home] %>/bin/dbstart <%= node[:oracle][:rdbms][:ora_home] %>"
+        su - oracle -c "<%= node[:oracle][:rdbms][:ora_home] %>/bin/emctl start dbconsole"
         RETVAL=$?
         [ "$RETVAL" = 0 ] && touch /var/lock/subsys/oracle
         ;;
  
 'stop')
+        su - oracle -c "<%= node[:oracle][:rdbms][:ora_home] %>/bin/emctl stop dbconsole"
         su - oracle -c "<%= node[:oracle][:rdbms][:ora_home] %>/bin/dbshut <%= node[:oracle][:rdbms][:ora_home] %>"
         RETVAL=$?
         [ "$RETVAL" = 0 ] && rm -f /var/lock/subsys/oracle

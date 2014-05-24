@@ -1,4 +1,4 @@
-# Oracle 11g R2 kernel tuning
+# Oracle 11g R2 and 12c R1 kernel tuning
 kernel.sem = 250 32000 100 128
 fs.file-max = 6815744
 fs.aio-max-nr = 1048576
