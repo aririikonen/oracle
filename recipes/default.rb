@@ -13,11 +13,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
-## Configure Oracle user, install the RDBMS's dependencies, configure
-## kernel parameters, install the binaries and apply latest patch.
-#
 
+# Configure Oracle user, install the RDBMS's dependencies, configure
+# kernel parameters, install the binaries and apply latest patch.
 
 # Set up and configure the oracle user.
 include_recipe 'oracle::oracle_user_config'

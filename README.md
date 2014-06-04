@@ -55,7 +55,7 @@ Quickstart (database)
         name "ora_12c_quickstart"
         description "Role applied to Oracle 12c quickstart test machines."
         run_list 'recipe[base]', 'recipe[oracle]', 'recipe[oracle::logrotate_alert_log]', 'recipe[oracle::logrotate_listener]', 'recipe[oracle::createdb]'
-        override_attributes :oracle => {:rdbms => {:latest_patch => {:url => 'https://web-server.local/orapkg/p18031528_121010_Linux-x86-64.zip'}, :opatch_update_url => 'https://web-server.local/orapkg/p6880880_121010_Linux-x86-64.zip', :install_files => ['https://web-server.local/orapkg/linuxamd64_12c_database_1of2.zip', 'https://web-server.local/orapkg/linuxamd64_12c_database_2of2.zip'], :dbbin_version => '12c'}}
+        override_attributes :oracle => {:rdbms => {:latest_patch => {:url => 'https://secure.server.localdomain/path/to/p18031528_121010_Linux-x86-64.zip'}, :opatch_update_url => 'https://secure.server.localdomain/path/to/p6880880_121010_Linux-x86-64.zip', :install_files => ['https://secure.server.localdomain/path/to/linuxamd64_12c_database_1of2.zip', 'https://secure.server.localdomain/path/to/linuxamd64_12c_database_2of2.zip'], :dbbin_version => '12c'}}
 
 * You need to set up an encrypted data bag item to secure the oracle
   user's password. See Opscode's docs site for details on encrypted
