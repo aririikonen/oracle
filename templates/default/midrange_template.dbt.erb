@@ -31,7 +31,7 @@
          <initParam name="processes" value="999"/>
          <initParam name="undo_tablespace" value="UNDOTBS1"/>
          <initParam name="control_files" value="(&quot;<%= node[:oracle][:rdbms][:dbs_root] %>/{DB_UNIQUE_NAME}/control01.ctl&quot;, &quot;/oracle/{DB_UNIQUE_NAME}/redo1/control02.ctl&quot;)"/>
-         <initParam name="diagnostic_dest" value="/opt/oracle"/>
+         <initParam name="diagnostic_dest" value="<%= node[:oracle][:ora_base] %>"/>
          <initParam name="db_recovery_file_dest" value="<%= node[:oracle][:rdbms][:dbs_root] %>/{DB_UNIQUE_NAME}/flash_recovery_area"/>
          <initParam name="audit_trail" value="DB"/>
          <initParam name="log_archive_format" value="{SID}_%t_%s_%r.arc"/>

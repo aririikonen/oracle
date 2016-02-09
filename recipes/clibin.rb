@@ -46,7 +46,7 @@ yum_package 'unzip'
 # in the kernel killing it.
 node[:oracle][:client][:install_files].each do |zip_file|
   execute "fetch_media_11R23cli-#{zip_file}" do
-    command "curl -kO #{zip_file}"
+    command "curl #{node[:oracle][:curl_options]} #{zip_file}"
     user "oracli"
     group 'oracli'
     cwd node[:oracle][:client][:install_dir]

@@ -36,6 +36,7 @@ default[:oracle][:cliuser][:edb_item] = 'foo'
 # General Oracle settings.
 default[:oracle][:ora_base] = '/opt/oracle'
 default[:oracle][:ora_inventory] = '/opt/oraInventory'
+default[:oracle][:curl_options] = "-kO"
 
 ## Settings specific to the Oracle RDBMS proper.
 default[:oracle][:rdbms][:dbbin_version] = '11g'

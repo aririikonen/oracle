@@ -33,8 +33,8 @@ unless node[:oracle][:rdbms][:latest_patch][:is_installed]
     group 'oinstall'
     cwd node[:oracle][:rdbms][:install_dir]
     code <<-EOH
-    curl -kO #{node[:oracle][:rdbms][:latest_patch][:url]}
-    curl -kO #{node[:oracle][:rdbms][:opatch_update_url]}
+    curl #{node[:oracle][:curl_options]} #{node[:oracle][:rdbms][:latest_patch][:url]}
+    curl #{node[:oracle][:curl_options]} #{node[:oracle][:rdbms][:opatch_update_url]}
     unzip #{File.basename(node[:oracle][:rdbms][:latest_patch][:url])}
     EOH
   end
@@ -54,7 +54,7 @@ unless node[:oracle][:rdbms][:latest_patch][:is_installed]
   # Making sure ocm.rsp response file is present.
   if !node[:oracle][:rdbms][:response_file_url].empty?
     execute "fetch_response_file" do
-      command "curl -kO #{node[:oracle][:rdbms][:response_file_url]}"
+      command "curl #{node[:oracle][:curl_options]} #{node[:oracle][:rdbms][:response_file_url]}"
       user "oracle"
       group 'oinstall'
       cwd node[:oracle][:rdbms][:install_dir]

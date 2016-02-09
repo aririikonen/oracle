@@ -244,6 +244,8 @@ defined there directly:
 defaults to `/opt/oracle`.
 * `node[:oracle][:ora_inventory]` - sets oraInventory's absolute pathname,
 defaults to `/opt/oraInventory`.
+* `node[:oracle][:curl_options]` - sets curl options for media file download,
+defaults to `-kO`.
 
 `:oracle` has four children: 
 

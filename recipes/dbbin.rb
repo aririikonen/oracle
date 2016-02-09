@@ -53,7 +53,7 @@ yum_package 'unzip'
 # in the kernel killing it.
 node[:oracle][:rdbms][:install_files].each do |zip_file|
   execute "fetch_oracle_media_#{zip_file}" do
-    command "curl -kO #{zip_file}"
+    command "curl #{node[:oracle][:curl_options]} #{zip_file}"
     user "oracle"
     group 'oinstall'
     cwd node[:oracle][:rdbms][:install_dir]
