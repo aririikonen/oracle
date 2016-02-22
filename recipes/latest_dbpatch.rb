@@ -57,7 +57,7 @@ unless node[:oracle][:rdbms][:latest_patch][:is_installed]
       command "curl #{node[:oracle][:curl_options]} #{node[:oracle][:rdbms][:response_file_url]}"
       user "oracle"
       group 'oinstall'
-      cwd node[:oracle][:rdbms][:install_dir]
+      cwd node[:oracle][:rdbms][:ora_home]
     end
   else
     execute 'gen_response_file' do
