@@ -60,7 +60,7 @@ Quickstart (database)
 * You need to set up an encrypted data bag item to secure the oracle
   user's password. See Opscode's docs site for details on encrypted
   data bags:
-  [encrypted data bag doc](http://docs.opscode.com/chef/essentials_data_bags.html#encrypt-a-data-bag)
+  [encrypted data bag doc](https://docs.chef.io/data_bags.html#encrypt-a-data-bag-item)
   Your encrypted item requires a key named `pw`, whose value is the
   password of the oracle user- you can set that to whatever you want.
   You must set the value of `node[:oracle][:user][:edb]` to the name
