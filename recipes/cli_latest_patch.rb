@@ -52,7 +52,7 @@ unless node[:oracle][:client][:latest_patch][:is_installed]
       command "curl #{node[:oracle][:curl_options]} #{node[:oracle][:client][:response_file_url]}"
       user "oracli"
       group 'oracli'
-      cwd node[:oracle][:client][:install_dir]
+      cwd node[:oracle][:client][:ora_home]
     end
   else
     execute 'gen_response_file' do
