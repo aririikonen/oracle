@@ -80,9 +80,11 @@ Quickstart (database)
 
 * Bootstrap the node, telling Chef to create the FOO database on it:
 
-  11g 
+  11g
+  
         knife bootstrap HOSTNAME -r 'role[ora_quickstart]' -j '{"oracle" : {"rdbms": {"dbs": {"FOO" : false}}}}' 
-  12c 
+  12c
+  
         knife bootstrap HOSTNAME -r 'role[ora_12c_quickstart]' -j '{"oracle" : {"rdbms": {"dbs": {"FOO" : false}}}}' 
 
 * Go grab a cup of tea, as this is apt to take a fair amount of time
