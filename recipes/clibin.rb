@@ -84,6 +84,9 @@ end
 
 # Filesystem template.
 template "#{node[:oracle][:client][:install_dir]}/cli11R23.rsp" do
+  variables(
+      :installation_type => "#{node[:oracle][:client][:installation_type]}",
+      :custom_components => "#{node[:oracle][:client][:custom_components]}" )
   owner 'oracli'
   group 'oracli'
   mode '0644'

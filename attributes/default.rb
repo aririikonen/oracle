@@ -54,6 +54,8 @@ default[:oracle][:client][:is_installed] = false
 default[:oracle][:client][:install_info] = {}
 default[:oracle][:client][:install_dir] = "#{node[:oracle][:ora_base]}/install_dir_client"
 default[:oracle][:client][:response_file_url] = ''
+default[:oracle][:client][:installation_type] = 'Runtime'
+default[:oracle][:client][:custom_components] = ''
 
 # Dependencies for Oracle 11.2.
 # Source: <http://docs.oracle.com/cd/E11882_01/install.112/e24321/pre_install.htm#CIHFICFD>

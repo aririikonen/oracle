@@ -5,8 +5,8 @@ INVENTORY_LOCATION=/opt/oraInventory
 SELECTED_LANGUAGES=en
 ORACLE_HOME=<%= node[:oracle][:client][:ora_home] %>
 ORACLE_BASE=<%= node[:oracle][:ora_base] %>
-oracle.install.client.installType=Runtime
-oracle.install.client.customComponents=
+oracle.install.client.installType=<%= @installation_type %>
+oracle.install.client.customComponents=<%= @custom_components %>
 oracle.install.client.oramtsPortNumber=
 oracle.install.client.schedulerAgentHostName=
 oracle.install.client.schedulerAgentPortNumber=
