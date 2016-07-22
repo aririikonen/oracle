@@ -129,6 +129,12 @@ Quickstart (client)
 
         knife bootstrap HOSTNAME -r 'role[ora_cli_quickstart]'
 
+* By default, this cookbook will make a "Runtime" client installation; 
+  you can change this behavior by overriding the attribute `[:oracle][:client][:installation_type]` 
+  with a value among "Runtime", "Administrator" or "Custom" . Set also 
+  `[:oracle][:client][:custom_components]` if You choosed `Custom` type.  
+
+
 Requirements
 ============
 
@@ -373,6 +379,10 @@ rather unsurprisingly:
 * `node[:oracle][:client][:response_file_url]` - sets the URL of the
   response file you want Chef to use instead of having it generate a
   basic ocm.rsp itself.
+* `node[:oracle][:client][:installation_type]` - sets the installation type: *Runtime* (default), 
+  *Administrator* , *Custom* .
+* `node[:oracle][:client][:custom_components]` - if You choosed `Custom` installation type, list 
+  here all the components You desire: i.e., "oracle.rdbms.util:11.2.0.3.0","oracle.javavm.client:11.2.0.3.0", ...
 * Client recipes use the same dependencies as for the database install
   `node[:oracle][:rdbms][:deps]` - an Array storing the package names
   of the Oracle RDBMS' and Oracle Client' dependencies.

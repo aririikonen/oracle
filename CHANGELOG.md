@@ -6,6 +6,10 @@ Cookbook relaunched (aririikonen/oracle).
 
 * Please refer to README.md, chapter Roadmap.
 
+## 1.2.4:
+
+* Added two attributes to choose installation type: node[:oracle][:client][:installation_type] and node[:oracle][:client][:custom_components]
+
 ## 1.2.3:
 
 * Changed db11R23.rsp.erb to replace INVENTORY_LOCATION to node[:oracle][:ora_inventory]. (https://github.com/aririikonen/oracle/issues/12)
